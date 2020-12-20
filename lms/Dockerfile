@@ -1,7 +1,7 @@
 ARG BUILD_FROM=hassioaddons/debian-base:latest
 FROM ${BUILD_FROM}
 ARG target_uid=1000
-ARG url="http://www.mysqueezebox.com/update/?version=7.9&revision=1&geturl=1&os=deb" 
+ARG url="http://www.mysqueezebox.com/update/?version=7.9&revision=1&geturl=1&os=deb"
 ARG debug=true
 
 ARG BUILD_ARCH
@@ -13,13 +13,13 @@ ARG BUILD_ARCH
 # Allow longer shutdown
 ENV S6_SERVICES_GRACETIME 119000
 # Set for package install
-ENV DEBIAN_FRONTEND "noninteractive" 
+ENV DEBIAN_FRONTEND "noninteractive"
 # FIXME? locales
 #ENV LANG C.UTF-8
 # TZ config at runtime
 ENV DISABLE_HA_AUTHENTICATION true
 
-# LMS 
+# LMS
 # Debug?
 ENV LMS_PREFS /config/lms/prefs
 ENV LMS_PLUGS /config/lms/plugins
@@ -50,14 +50,14 @@ RUN apt-get update && \
 		awscli \
 		lvm2 \
 		patch \
-		tzdata 
+		tzdata
 
 #FIXME DEV?
 RUN if [[ ! -z "${debug}" ]];then apt-get -y install vim less procps strace;fi
 
 #FIXME user curl
 RUN echo "${url}" && \
-        latest_lms=$(wget -q -O - "${url}" | sed 's/_all\.deb/_'$(arch | sed 's/arm.*/arm/')'\.deb/') && \
+        latest_lms=$(wget -q -O - "${url}" | sed 's/_all\.deb/_'$(echo $BUILD_ARCH | sed 's/arm.*/arm/')'\.deb/') && \
 	mkdir -p /sources && \
 	cd /sources && \
 	wget $latest_lms && \
